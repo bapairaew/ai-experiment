@@ -1,0 +1,16 @@
+.input {
+  border: none;
+  border-bottom: .04em solid rgba(0,0,0,.3);
+  border-right: .2em solid transparent;
+  border-left: .2em solid transparent;
+  background: transparent;
+  outline: none;
+  width: calc(100% - .4em);
+  box-sizing: border-box;
+  border-radius: .2em;
+  padding: 0 .2em;
+
+  &:disabled {
+    opacity: .5;
+  }
+}

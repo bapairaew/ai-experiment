@@ -1,0 +1,89 @@
+.stack,
+.note {
+  width: 500px;
+}
+
+.stack {
+  position: relative;
+  height: 400px;
+  perspective: 2000px;
+}
+
+.note {
+  height: 220px;
+  background: #fff;
+  border: 1px solid #ddd;
+  position: absolute;
+  overflow: hidden;
+
+  &:first-child {
+    box-shadow: 0 0 50px rgba(0,0,0,.05);
+  }
+
+  .text {
+    font-size: 4em;
+    font-weight: lighter;
+    position: absolute;
+    top: .5em;
+    left: .8em;
+    color: rgba(0,0,0,.2);
+  }
+
+  .stripes {
+    position: absolute;
+    top: 0;
+    right: 2em;
+    height: 100%;
+  }
+
+  .stripe {
+    display: inline-block;
+    margin-right: .3em;
+    width: .2em;
+    height: 100%;
+    bottom: 0;
+    background: #08c;
+  }
+}
+
+.total {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-weight: lighter;
+  font-size: 5em;
+  color: rgba(0,0,0,.4);
+  margin-top: 50px;
+  transition: all 200ms;
+}
+
+.noteEnter {
+  transform: translateX(-1000px);
+}
+
+.noteEnterAlt {
+  transform: translateX(1000px);
+}
+
+.noteEnterAlt.noteEnterActive,
+.noteEnter.noteEnterActive {
+  transform: translateX(0px);
+  transition: transform 500ms ease-in-out;
+}
+
+.noteLeave {
+  transform: translateX(0px);
+}
+
+.noteLeaveAlt.noteLeaveActive,
+.noteLeave.noteLeaveActive {
+  transition: transform 500ms ease-in-out;
+}
+
+.noteLeave.noteLeaveActive {
+  transform: translateX(-1000px);
+}
+
+.noteLeaveAlt.noteLeaveActive {
+  transform: translateX(1000px);
+}

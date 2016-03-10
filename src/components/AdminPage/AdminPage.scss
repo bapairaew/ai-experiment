@@ -1,0 +1,104 @@
+@import '../variables.scss';
+
+.container {
+  height: 100%;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.8);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 300ms;
+
+  &.active {
+    opacity: 1;
+    pointer-events: none;
+    z-index: 999;
+  }
+}
+
+.mainContainer {
+  height: calc(100% - 100px);
+}
+
+.turnHeading {
+  margin: 0 0 .5em 0;
+  font-weight: normal;
+  font-size: 3em;
+  color: $textColor;
+  visibility: collapse;
+
+  &.active {
+    visibility: visible;
+  }
+}
+
+.player1Container,
+.player2Container {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .playerOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,.6);
+    transition: opacity 300ms;
+    z-index: 999;
+  }
+
+  &.active {
+    box-shadow: 0 0 10px rgba(0,0,0,.5);
+
+    .playerOverlay {
+      opacity: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+  }
+}
+
+.player1Container {
+  background: $player1;
+}
+
+.player2Container {
+  background: $player2;
+}
+
+.controlPanel {
+  height: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  background: #EEE;
+
+  > * {
+    margin: 0 1em;
+  }
+
+  .button {
+    height: 3em;
+  }
+
+  .round {
+    font-weight: normal;
+  }
+}

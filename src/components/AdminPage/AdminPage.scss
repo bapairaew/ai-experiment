@@ -20,7 +20,6 @@
 
   &.active {
     opacity: 1;
-    pointer-events: none;
     z-index: 999;
   }
 }
@@ -100,5 +99,47 @@
 
   .round {
     font-weight: normal;
+  }
+}
+
+.dialog {
+  padding: 1em 2em;
+  width: 500px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  color: rgba(0,0,0,.7);
+
+  h1 {
+    font-weight: lighter;
+  }
+
+  .formMember {
+    width: 100%;
+    margin: .5em 0;
+
+    label {
+      color: rgba(0,0,0,.4);
+      margin: .5em;
+    }
+
+    .block {
+      display: block;
+      margin: .5em 0;
+    }
+
+    input + span {
+      margin-left: .4em;
+    }
+  }
+
+  .formButton {
+    width: calc(50% - 1em);
+    &:not(:first-child) {
+      margin-left: 1em;
+    }
   }
 }

@@ -1,3 +1,5 @@
+@import '../variables.scss';
+
 .stack,
 .note {
   width: 500px;
@@ -42,7 +44,7 @@
     width: .2em;
     height: 100%;
     bottom: 0;
-    background: #08c;
+    background: $accent;
   }
 }
 
@@ -58,14 +60,9 @@
 }
 
 .noteEnter {
-  transform: translateX(-1000px);
+  transform: translateY(1000px);
 }
 
-.noteEnterAlt {
-  transform: translateX(1000px);
-}
-
-.noteEnterAlt.noteEnterActive,
 .noteEnter.noteEnterActive {
   transform: translateX(0px);
   transition: transform 500ms ease-in-out;
@@ -75,15 +72,10 @@
   transform: translateX(0px);
 }
 
-.noteLeaveAlt.noteLeaveActive,
 .noteLeave.noteLeaveActive {
   transition: transform 500ms ease-in-out;
 }
 
 .noteLeave.noteLeaveActive {
-  transform: translateX(-1000px);
-}
-
-.noteLeaveAlt.noteLeaveActive {
-  transform: translateX(1000px);
+  transform: translateY(1000px);
 }

@@ -18,16 +18,24 @@ import assets from './assets';
 import { port } from './config';
 import http from 'http';
 import Socket from './socket/server.js';
+import Db from './db';
 
 const server = global.server = express();
 const httpServer = http.Server(server);
 
-const socket = Socket.init(httpServer);
+const db = Db.init(process.env.MONGOLAB_URI || 'mongodb://localhost/ai-experiment');
+const socket = Socket.init(httpServer, db);
 
 //
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
 server.use(express.static(path.join(__dirname, 'public')));
+
+server.get('/download', (req, res) => {
+  socket.getDownableContent(function (results) {
+    res.send(results);
+  });
+});
 
 //
 // Register server-side rendering middleware

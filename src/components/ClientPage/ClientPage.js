@@ -4,12 +4,15 @@ import s from './ClientPage.scss';
 import withStyles from '../../decorators/withStyles';
 import store from '../../stores';
 import getPlayerById from '../../utils/getPlayerById';
-import { decorateNumber } from '../../utils/currency';
 import BankStack from '../BankStack';
+import AnimatingNumber from '../AnimatingNumber';
+import { decorateNumber } from '../../utils/currency';
 
 const title = 'Client';
 
 const cx = classNames.bind(s);
+
+const TRANFER_TIME = 1000;
 
 @withStyles(s)
 class ClientPage extends Component {
@@ -28,10 +31,13 @@ class ClientPage extends Component {
   };
 
   state = {
+    initialised: false,
     id: '',
-    me: {},
-    opponent: {},
+    round: 0,
+    me: { money: 0 },
+    opponent: { money: 0 },
     isMyTurn: false,
+    transferAmount: 0,
     transferring: false
   };
 
@@ -44,34 +50,48 @@ class ClientPage extends Component {
     this.context.onSetTitle(title);
   }
 
+  getTransferAmount(prev, current) {
+    const myDiff = Math.abs(prev.me.money - current.me.money);
+    const opponentDiff = Math.abs(prev.opponent.money - current.opponent.money);
+    return myDiff < opponentDiff ? myDiff : opponentDiff;
+    //return 0;
+  }
+
   componentDidMount() {
     const { id } = this.state;
     this.unsubscribe = store.subscribe(() => {
       // TODO: try to use css to do the animation instead!!
       const game = store.getState();
       let isMyTurn = game.roundPlayer === id;
+      const { initialised } = this.state;
+      let { round } = game;
 
       let me = getPlayerById(game, id);
       setTimeout(() => {
         const state = { me: me };
         if (isMyTurn) {
           state.isMyTurn = isMyTurn;
-          state.transferring = false;
+          state.round = game.round;
         }
         this.setState(state);
-      }, isMyTurn ? 2000 : 0);
+      }, (initialised && isMyTurn) ? TRANFER_TIME : 0);
 
       let opponent = me === game.player1 ? game.player2 : game.player1;
       setTimeout(() => {
         const state = { opponent: opponent };
         if (!isMyTurn) {
           state.isMyTurn = isMyTurn;
-          state.transferring = false;
+          state.round = game.round;
         }
         this.setState(state);
-      }, isMyTurn ? 0 : 2000);
+      }, (!initialised || isMyTurn) ? 0 : TRANFER_TIME);
 
-      this.setState({ transferring: true });
+      setTimeout(() => {
+        this.setState({ transferring: false });
+      }, TRANFER_TIME + 1000);
+
+      this.setState({ transferring: initialised, initialised: true,
+        transferAmount: this.getTransferAmount(this.state, { me, opponent }) });
     }.bind(this));
   }
 
@@ -80,23 +100,38 @@ class ClientPage extends Component {
   }
 
   render() {
-    const { isMyTurn, opponent, me, transferring } = this.state;
+    const { isMyTurn, opponent, me, transferring, round, transferAmount } = this.state;
     const { position } = this.props;
     const isLeftMain = position === 'left';
     const left = isLeftMain ? me : opponent;
     const right = isLeftMain ? opponent : me;
     return (
       <div className={s.container}>
-        <div className={cx({ bankContainer: true, transferring: true, main: isLeftMain, active: !isMyTurn })}>
-          <h2 className={cx(s.subHeading, { active: isMyTurn && isLeftMain })}>Your turn!</h2>
-          <BankStack className={cx({ stack: true, minor: !isLeftMain })} amount={left.money} direction="right" />
+        <div className={s.mainContainer}>
+          <div className={cx(s.bankContainer, { main: isLeftMain, active: !isMyTurn })}>
+            <h2 className={cx(s.subHeading, { active: isMyTurn && isLeftMain })}>Your turn!</h2>
+            <BankStack className={cx(s.stack, { minor: !isLeftMain })} amount={left.money} direction="right" />
+          </div>
+          <div className={cx(s.divider, { right: isLeftMain })}>
+            <div className={s.circle}>
+              <div className={s.smallText}>Round:</div>
+              <div>{ round }</div>
+            </div>
+          </div>
+          <div className={cx(s.bankContainer, { main: !isLeftMain, active: isMyTurn })}>
+            <h2 className={cx(s.subHeading, { active: isMyTurn && !isLeftMain })}>Your turn!</h2>
+            <BankStack className={cx(s.stack, { minor: isLeftMain })} amount={right.money} />
+          </div>
         </div>
-        <div className={s.divider}>
-          <div className={s.circle}></div>
-        </div>
-        <div className={cx({ bankContainer: true, transferring: true, main: !isLeftMain, active: isMyTurn })}>
-          <h2 className={cx(s.subHeading, { active: isMyTurn && !isLeftMain })}>Your turn!</h2>
-          <BankStack className={cx({ stack: true, minor: isLeftMain })} amount={right.money} />
+        <div className={cx(s.transferer, { transferring: transferring })}>
+          <div className={s.wrapper}>
+            <span className={s.highlight}>Transferring: </span>
+            <span>{decorateNumber(transferAmount)}</span>
+            <span>x</span>
+            <span>3</span>
+            <span>=</span>
+            <AnimatingNumber className={s.highlight} value={transferAmount * 3}></AnimatingNumber>
+          </div>
         </div>
       </div>
     );

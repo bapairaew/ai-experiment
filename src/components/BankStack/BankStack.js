@@ -3,8 +3,8 @@ import classNames from 'classnames/bind';
 import s from './BankStack.scss';
 import withStyles from '../../decorators/withStyles';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { decorateNumber } from '../../utils/currency';
 import range from '../../utils/range';
+import AnimatingNumber from '../AnimatingNumber';
 
 const cx = classNames.bind(s);
 
@@ -14,12 +14,10 @@ const BANK_MARGIN = 5;
 class BankStack extends Component {
   static propTypes = {
     amount: PropTypes.number,
-    direction: PropTypes.string
   };
 
   static defaultProps = {
     amount: 10,
-    direction: 'left'
   };
 
   state = {
@@ -121,20 +119,21 @@ class BankStack extends Component {
 
   render() {
     const { amount } = this.state;
-    const { direction } = this.props;
     const notes = this.calculateNotes(amount);
     return (
       <ReactCSSTransitionGroup {...this.props} component="div"
         transitionEnterTimeout={500} transitionLeaveTimeout={500}
         transitionName={{
-          enter: direction === 'left' ? s.noteEnter : s.noteEnterAlt,
+          enter: s.noteEnter,
           enterActive: s.noteEnterActive,
-          leave: direction === 'left' ? s.noteLeave : s.noteLeaveAlt,
+          leave: s.noteLeave,
           leaveActive: s.noteLeaveActive
         }}
         className={cx(s.stack, this.props.className)}>
         {notes.reverse().map(this.generateNote.bind(this))}
-        <div key="total" className={s.total}>{decorateNumber(amount)}</div>
+        <div key="total" className={s.total}>
+          <AnimatingNumber value={amount}></AnimatingNumber>
+        </div>
       </ReactCSSTransitionGroup>
     );
   }

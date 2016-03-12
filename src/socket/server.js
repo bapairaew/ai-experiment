@@ -20,8 +20,8 @@ Game.count({}, (err, value) => { index = value });
 const getNewGame = () => {
   return new Game({
     log: [],
-    player1: { id: 'robot', name: 'Agent', player: 1, money: 10 },
-    player2: { id: 'client', name: 'Participant', player: 2, money: 10 },
+    player1: { id: 'Agent', name: 'Agent', player: 1, money: 10 },
+    player2: { id: 'Participant', name: 'Participant', player: 2, money: 10 },
     startedTime: new Date(),
     endedTime: null,
     number: index + 1,

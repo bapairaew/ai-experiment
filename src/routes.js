@@ -22,8 +22,8 @@ const router = new Router(on => {
     return component && <App context={state.context}>{component}</App>;
   });
 
-  on('/', async () => <ClientPage id="client" position="right" />);
-  on('/robot', async () => <ClientPage id="robot" position="left" />);
+  on('/', async () => <ClientPage id="Participant" position="right" />);
+  on('/robot', async () => <ClientPage id="Agent" position="left" />);
   on('/admin', async () => <AdminPage />);
 
   on('error', (state, error) => state.statusCode === 404 ?

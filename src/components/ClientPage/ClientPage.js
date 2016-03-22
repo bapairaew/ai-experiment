@@ -141,6 +141,8 @@ class ClientPage extends Component {
         <div className={cx(s.overlay, { active: !!endedTime })}>
           <div className={s.dialog}>
             <h1>Game Over!</h1>
+            <h3>Your money is <b>{ me.money }</b></h3>
+            <h3>Your team money is <b>{ me.money + opponent.money }</b></h3>
           </div>
         </div>
         <div className={cx(s.overlay, { active: !!newGame })}>

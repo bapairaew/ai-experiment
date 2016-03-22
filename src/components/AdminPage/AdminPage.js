@@ -7,6 +7,7 @@ import { transfer, restart, name, save, reset } from '../../actions';
 import store from '../../stores';
 import getPlayerById from '../../utils/getPlayerById';
 import pick from '../../utils/pick';
+import isNewGame from '../../utils/isNewGame';
 import Button from '../Button';
 import TextBox from '../TextBox';
 import Loader from '../Loader';
@@ -51,8 +52,7 @@ class ClientPage extends Component {
       if (this.state.resetting && !state.resetting) {
         state.resetOpened = false;
       }
-      if (state.round !== this.state.round && state.round === 1) {
-        console.log(state.round, this.state.round);
+      if (isNewGame(state, this.state)) {
         state.detailsOpened = true;
       }
       this.setState(state);

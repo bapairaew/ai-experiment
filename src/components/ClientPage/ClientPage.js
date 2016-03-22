@@ -7,6 +7,7 @@ import getPlayerById from '../../utils/getPlayerById';
 import BankStack from '../BankStack';
 import AnimatingNumber from '../AnimatingNumber';
 import { decorateNumber } from '../../utils/currency';
+import isNewGame from '../../utils/isNewGame';
 
 const title = 'Client';
 
@@ -31,14 +32,14 @@ class ClientPage extends Component {
   };
 
   state = {
-    initialised: false,
     id: '',
     round: 0,
     me: { money: 0 },
     opponent: { money: 0 },
     isMyTurn: false,
     transferAmount: 0,
-    transferring: false
+    transferring: false,
+    newGame: false
   };
 
   constructor(props) {
@@ -63,8 +64,8 @@ class ClientPage extends Component {
       // TODO: try to use css to do the animation instead!!
       const game = store.getState();
       let isMyTurn = game.roundPlayer === id;
-      const { initialised } = this.state;
-      let { round } = game;
+      const transferring = game.round > this.state.round && this.state.round !== 0;
+      let { round, endedTime } = game;
 
       let me = getPlayerById(game, id);
       setTimeout(() => {
@@ -74,7 +75,7 @@ class ClientPage extends Component {
           state.round = game.round;
         }
         this.setState(state);
-      }, (initialised && isMyTurn) ? TRANFER_TIME : 0);
+      }, (transferring && isMyTurn) ? TRANFER_TIME : 0);
 
       let opponent = me === game.player1 ? game.player2 : game.player1;
       setTimeout(() => {
@@ -84,14 +85,18 @@ class ClientPage extends Component {
           state.round = game.round;
         }
         this.setState(state);
-      }, (!initialised || isMyTurn) ? 0 : TRANFER_TIME);
+      }, (!transferring || isMyTurn) ? 0 : TRANFER_TIME);
 
       setTimeout(() => {
         this.setState({ transferring: false });
       }, TRANFER_TIME + 1000);
 
-      this.setState({ transferring: initialised, initialised: true,
-        transferAmount: this.getTransferAmount(this.state, { me, opponent }) });
+      this.setState({
+        transferring: transferring,
+        endedTime: endedTime,
+        newGame: isNewGame(game, this.state),
+        transferAmount: this.getTransferAmount(this.state, { me, opponent })
+      });
     }.bind(this));
   }
 
@@ -100,7 +105,7 @@ class ClientPage extends Component {
   }
 
   render() {
-    const { isMyTurn, opponent, me, transferring, round, transferAmount } = this.state;
+    const { isMyTurn, opponent, me, transferring, round, transferAmount, endedTime, newGame } = this.state;
     const { position } = this.props;
     const isLeftMain = position === 'left';
     const left = isLeftMain ? me : opponent;
@@ -131,6 +136,17 @@ class ClientPage extends Component {
             <span>3</span>
             <span>=</span>
             <AnimatingNumber className={s.highlight} value={transferAmount * 3}></AnimatingNumber>
+          </div>
+        </div>
+        <div className={cx(s.overlay, { active: !!endedTime })}>
+          <div className={s.dialog}>
+            <h1>Game Over!</h1>
+          </div>
+        </div>
+        <div className={cx(s.overlay, { active: !!newGame })}>
+          <div className={cx(s.dialog, s.fullScreen)}>
+            <h1>Welcome!</h1>
+            <h3>the game is starting soon...</h3>
           </div>
         </div>
       </div>

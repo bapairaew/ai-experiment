@@ -15,12 +15,13 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  z-index: -1;
   transition: opacity 300ms;
+  z-index: 999;
+  pointer-events: none;
 
   &.active {
     opacity: 1;
-    z-index: 999;
+    pointer-events: auto;
   }
 }
 
@@ -110,7 +111,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   color: rgba(0,0,0,.7);
 
   h1 {

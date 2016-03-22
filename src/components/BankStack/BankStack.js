@@ -111,7 +111,7 @@ class BankStack extends Component {
       <div key={type + '-' + index} className={s.note}
         style={{margin: (index * BANK_MARGIN) + 'px 0', zIndex: -1 * index}}>
         <div className={s.stripes}>
-          {this.getBankStripes(type).map(() => <div className={s.stripe}></div>)}
+          {this.getBankStripes(type).map((i) => <div key={i} className={s.stripe}></div>)}
         </div>
       </div>
     );
